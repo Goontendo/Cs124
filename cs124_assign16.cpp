@@ -14,9 +14,7 @@
 
 #include <iostream>
 using namespace std;
-/**********************************************************************
- * function to compute tax
- *********************************************************************/
+
 double ComputeTax(double Income)
 {
    double ComputeTax;

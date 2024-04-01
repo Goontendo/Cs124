@@ -26,6 +26,8 @@ void display(char sudoku[][9]);
 int editcoordinates(char sudoku[][9]);
 int Writefile(char sudoku[][9]);
 bool command(char factor, char sudoku[][9]);
+void getpossible(int possible[],char sudoku[][9], int &r, int &c);
+
 
 
 /**********************************************************************
@@ -86,8 +88,8 @@ void display(char sudoku[][9])
         << sudoku[1][7] << " " << sudoku[1][8] 
         << endl
         << "3  " << sudoku[2][0] << " " << sudoku[2][1] << " "
-        << sudoku[2][2] << "|" << sudoku[2][3] << " " << sudoku[2][4] 
-        << " " << sudoku[2][5] << "|" << sudoku[6][2] << " "
+        << sudoku[2][6] << "|" << sudoku[2][3] << " " << sudoku[2][4] 
+        << " " << sudoku[2][5] << "|" << sudoku[2][6] << " "
         << sudoku[2][7] << " " << sudoku[2][8] 
         << endl
         << "   -----+-----+-----"
@@ -110,7 +112,7 @@ void display(char sudoku[][9])
          << "   -----+-----+-----"
         << endl
         << "7  " << sudoku[6][0] << " " << sudoku[6][1] << " "
-        << sudoku[2][6] << "|" << sudoku[6][3] << " " << sudoku[6][4] 
+        << sudoku[6][2] << "|" << sudoku[6][3] << " " << sudoku[6][4] 
         << " " << sudoku[6][5] << "|" << sudoku[6][6] << " "
         << sudoku[6][7] << " " << sudoku[6][8] 
         << endl 
@@ -128,6 +130,7 @@ void display(char sudoku[][9])
 
 
    return;
+
 }
 
 /******************************************
@@ -135,120 +138,151 @@ void display(char sudoku[][9])
 *******************************************/
 void getcoordinates(int &r, int &c, string &cord)
 {
-    cout << "What are the coordinates of the square: ";
-    cin >> cord;
+   cout << "What are the coordinates of the square: ";
+   cin >> cord;
     
-    cord[0] = toupper(cord[0]);
-    cord[1];
+   cord[0] = toupper(cord[0]);
+   cord[1];
 
-    c = (int)cord[0] - 65;
-    r = (int)cord[0] - 49;
+   c = (int)cord[0] - 65;
+   r = (int)cord[1] - 49;
 
-    return;
+   return;
+
 }
-void possible(char sudoku[][9])
+
+/**************************************
+* function to show possible values
+***************************************/
+void frompossible(char sudoku[][9])
 {
-    int count= 0;
-    string cord;
-    int r = 0;
-    int c = 0;
+   int count = 0;
+   string cord;
+   int r = 0;
+   int c = 0;
 
-    getcoordinates(r,c,cord);
+   getcoordinates(r,c,cord);
 
-    int possible[9] = {1,2,3,4,5,6,7,8,9};
+   int possible[9] = {1, 2, 3, 4, 5, 6, 7, 8, 9};
 
-    int left = c / 3 * 3;
-    int right = left + 2;
-    int top = r / 3 * 3;
-    int bottom = top + 2;
+   getpossible(possible, sudoku, r, c);
 
-    for (int i = 0; i > 9; i++)
-    {
-        if (sudoku[r][i] != ' ')
-            possible[sudoku[r][i] - 49] = 0;
-	}
-    for (int j = 0; j < 9; j++)
-    {
-        if (sudoku[j][c] != ' ')
-            possible[sudoku[j][c] - 49] = 0;
-	}
-
-    for (int i = top; i <= bottom; i++)
-    {
-        for(int j = left; j <= right; j++)
-        {
-            if (sudoku[i][j] != ' ')
-                possible[sudoku[i][j] - 49] = 0;
-		}
-	}
-
-    cout << "The possible values for '" << cord << "' are: ";
+   cout << "The possible values for '" << cord << "' are: ";
         
-    for (int i = 0; i < 9; i++)
-    {
-        if (possible[i] != 0)
-        {
-            if (count == 0)
-                cout << possible[i];
-            else 
-                cout << ", " << possible[i];
+   for (int i = 0; i < 9; i++)
+   {
+      if (possible[i] != 0)
+      {
+         if (count == 0)
+            cout << possible[i];
+         else 
+            cout << ", " << possible[i];
 
-            count++;
-		}
-	}
-    cout << endl;
-    return;
+         count++;
+      }
+   }
+   cout << endl << endl;
 }
+
+/***************************************************************
+* calculates possible outcomes
+****************************************************************/ 
+void getpossible(int possible[],char sudoku[][9], int &r, int &c)
+{
+
+   int left = c / 3 * 3;
+   int right = left + 2;
+   int top = r / 3 * 3;
+   int bottom = top + 2;
+
+   for (int i = 0; i < 9; i++)
+   {
+      if (sudoku[r][i] != ' ')
+      {
+         possible[sudoku[r][i] - 49] = 0;
+      }
+   }
+   for (int j = 0; j < 9; j++)
+   {
+      if (sudoku[j][c] != ' ')
+      {
+         possible[sudoku[j][c] - 49] = 0;
+      }
+   }
+
+   for (int i = top; i <= bottom; i++)
+   {
+      for (int j = left; j <= right; j++)
+      {
+         if (sudoku[i][j] != ' ')
+         {
+            possible[sudoku[i][j] - 49] = 0;
+         }
+      }
+   }
+   return;
+}
+
 /***********************************
  * Edit coordinates
  ***********************************/
 int editcoordinates(char sudoku[][9])
 {
-    char value;
-    int num;
-    string cord;
-    int r = 0;
-    int c = 0;
-    getcoordinates(r,c,cord);
+   int num;
+   string cord;
+   char value;
+   int r = 0;
+   int c = 0;
 
-    int possible[9] = {1,2,3,4,5,6,7,8,9};
+   getcoordinates(r,c,cord);
 
-    if ((r < 0 || r > 8) || (c < 0 || c > 8))
-    {
-        cout << "ERROR: Square '" << cord << "' is invalid3\n";
-        return 0;
-    }
+   int possible[9] = {1,2,3,4,5,6,7,8,9};
 
-    if (sudoku[r][c] != ' ')
-    {
-        cout << "ERROR: Square '" << cord << "' is filled\n";
-        return 0;
-	}
+   getpossible(possible, sudoku, r, c);
+
+   if ((r < 0 || r > 8) || (c < 0 || c > 8))
+   {
+      cout << "ERROR: Square '" << cord << "' is filled\n\n";
+      return 0;
+   }
+
+   if (sudoku[r][c] != ' ')
+   {
+      cout << "ERROR: Square '" << cord << "' is filled\n\n";
+      return 0;
+   }
    
-    cout << "What is the value at '" << cord << "': ";
-    cin >> num;
+   cout << "What is the value at '" << cord << "': ";
+   cin >> num;
 
-    if (1> num || num < 9)
-    {
-       cout << " ERROR: Value '" << num << "' in square '" << cord << "' is invalid2" << endl;
-       return 0;
-    }
+   if (num < 1 || num > 9)
+   {
+      cout << "ERROR: Value '" << num << "' in square '" 
+         << cord << "' is invalid\n" << endl;
+      return 0;
+   }
+   bool temp = true;
+   for (int i = 0; i < 9; i++)
+   {
+      if (num == possible[i])
+      {     
+         temp = false;
+      }
+   }
+   if (temp)
+   {
+      cout << "ERROR: Value '" << num << "' in square '" 
+         << cord << "' is invalid\n" << endl;
+      return 0;
+   }  
 
-    bool temp = false;
-    for (int i = 0; i < 9; i++)
-    {
-         if (num == possible[i])
-             temp = true;
-    }
-    if (!temp)
-    {
-         cout << " ERROR: Value '" << num << "' in square '" << cord << "' is invalid1" << endl;
-         return 0;
-	}  
-
-   sudoku[r][c] = num;
+   value = (char)num + 48;
+   sudoku[r][c] = value;
+   
+   cout << endl;
 
    return 0;
+
 }
 
 /******************************
@@ -260,7 +294,9 @@ int Writefile(char sudoku[][9])
    cout << "What file would you like to write your board to: ";
    cin >> secondfile;
 
-   ofstream fout(secondfile);
+   ofstream fout;
+   
+   fout.open(secondfile);
 
    for (int x = 0; sudoku[x][0]; x++)
    {
@@ -275,6 +311,13 @@ int Writefile(char sudoku[][9])
             fout << endl;
       }
    }
+   if (fout.fail())
+   {
+      cout << "Written unsuccessfully";
+      return 0;
+   }
+
+   fout.close();
    cout << "Board written successfully\n";
 
    return 0;
@@ -312,15 +355,12 @@ bool command(char factor, char sudoku[][9])
             break;
          case 's':
          case 'S':
-            possible(sudoku);
+            frompossible(sudoku);
             break;
          case 'q':
          case 'Q':
             Writefile(sudoku);
             break;
-         default:
-            cout << "ERROR: Invalid command"
-                 << endl;
       }
    } while (factor != 'q' && factor != 'Q');
    

@@ -149,8 +149,6 @@ int puncuation(char story[numwords][numletters], int size)
          cout << story[i];
       else if (story[i][0] == '\n')
          cout << story[i];
-      else if (story[i][0] == '.' && story[i+1][0] == '\n')
-         cout << story[i];
       else 
          cout << story[i] << ' ';
    }
